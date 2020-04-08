@@ -1,8 +1,12 @@
 package model;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.sql.Date;
 import java.sql.Timestamp;
-
+@Component
+@Configuration
 public class Student {
     private long id ;
     private String sname;
