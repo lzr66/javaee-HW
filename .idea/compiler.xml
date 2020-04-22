@@ -9,6 +9,7 @@
         <module name="core" />
         <module name="JAVAEE-02" />
         <module name="JAVAEE-01" />
+        <module name="javaee-aspect" />
         <module name="db" />
       </profile>
     </annotationProcessing>
