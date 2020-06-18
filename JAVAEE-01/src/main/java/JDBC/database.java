@@ -3,6 +3,7 @@ package JDBC;
 import model.Homework;
 import model.Student;
 import model.StudentHomework;
+import model.user;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ public class database {
 
         try
         {
-            Connection connection = databasepool.getHikariDataSource().getConnection();
+            Connection connection = DriverManager.getConnection(dburl,"root","123456");
             PreparedStatement statement = connection.prepareStatement(sqlString);
             statement.setInt(1,sh.getId());
             statement.setLong(2,sh.getStudentId());
@@ -84,7 +85,7 @@ public class database {
         List<Student> studentlist= new ArrayList<>();
         String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
         String sqlString = "SELECT * FROM student";
-        try( Connection connection = databasepool.getHikariDataSource().getConnection()){
+        try( Connection connection = DriverManager.getConnection(dburl,"root","123456");){
             try(Statement statement = connection.createStatement()){
                 try(ResultSet resultSet = statement.executeQuery(sqlString)){
                     // 获取执行结果
@@ -106,13 +107,12 @@ public class database {
     //老师操作添加学生
     public static  void addStudent(Student st){
 
-        String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
         String sqlString = "INSERT INTO student values(?,?,?,null )";
-
+        String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
 
         List<Student> list= new ArrayList<>();
 
-        try( Connection connection = databasepool.getHikariDataSource().getConnection();
+        try(  Connection connection = DriverManager.getConnection(dburl,"root","123456");
             PreparedStatement statement = connection.prepareStatement(sqlString) )
 
         {
@@ -129,13 +129,54 @@ public class database {
             e.printStackTrace();
         }
     }
+    public static boolean login(user user)  {
+        boolean flag= false;
+        String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
+        String sqlString = "SELECT * FROM user where username= ? and password =?";
+        try( Connection connection = DriverManager.getConnection(dburl,"root","123456");
+             PreparedStatement statement = connection.prepareStatement(sqlString) )
+        {
+            statement.setString(1,user.getUsername());
+            statement.setString(2,user.getPassword());
+            flag= statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return flag;
+
+    }
+    public static void regiser(user user){
+        String sqlString = "INSERT INTO user values(?,? )";
+        String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
+
+        List<Student> list= new ArrayList<>();
+
+        try(  Connection connection = DriverManager.getConnection(dburl,"root","123456");
+              PreparedStatement statement = connection.prepareStatement(sqlString) )
+
+        {
+            statement.setString(1,user.getUsername());
+            statement.setString(2,user.getPassword());
+
+            boolean i= statement.execute();
+            if (! i)
+            {
+                System.out.println("用户添加成功");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void addHomework(Homework homework){
         String dburl = "jdbc:mysql://127.0.0.1:3306/homework?&useSSL=false&serverTimezone=UTC";
         String sqlString = "INSERT INTO homework values(?,?,?,?,null )";
 
         List<Homework> list= new ArrayList<>();
-        try( Connection connection = databasepool.getHikariDataSource().getConnection();
+        try( Connection connection = DriverManager.getConnection(dburl,"root","123456");
             PreparedStatement statement = connection.prepareStatement(sqlString) )
 
         {
